@@ -16,13 +16,14 @@ double readTemperature(char *filePath){
 	return temperature;	
 }
 
-int *collectTemperaturevalues(int tempArr[], int temperatureCount, int intervalInSeconds){
+double  *collectTemperatureValues(double tempArr[], int temperatureCount, int intervalInSeconds){
 	int i;
-	for (i = 0; i < tempratureCount; i++){
+	for (i = 0; i < temperatureCount; i++){
 		sleep(intervalInSeconds); // Sleep before reading the next value
 		tempArr[i] = readTemperature("./example_files/temp1");
 	}
-
+	
+	return tempArr;
 }
 
 void sendMail(char *recipient){
@@ -30,11 +31,12 @@ void sendMail(char *recipient){
 }
 
 int main(){
-	double temperature;
-       	temperature = readTemperature("./example_files/temp1");
-	if(temperature != 1)
-		printf("%lf \n", temperature);
-
+	double temperatures[20];
+	collectTemperatureValues(temperatures, 20, 1);
+	int i;
+	for (i = 0; i < 20; i++ ){
+		printf("%lf \n", temperatures[i]);
+	}
 
 
 }
