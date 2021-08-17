@@ -26,18 +26,45 @@ double  *collectTemperatureValues(double tempArr[], int temperatureCount, int in
 	return tempArr;
 }
 
-void sendMail(char *recipient){
+double calculateAverage(double values[], int size){
+	double sum, average;
+	int i;
 
+	for (i = 0; i < size; i++)
+		sum += values[i];
+
+	average = sum / size;
+	return average;
+}
+
+void sendMail(char *recipient){
+	printf("Sending email to %s", recipient);
 }
 
 int main(){
-	double temperatures[20];
-	collectTemperatureValues(temperatures, 20, 1);
+	int temperatureCount;
+	temperatureCount = 20;
+	double temperatures[temperatureCount];
+
+	collectTemperatureValues(temperatures, temperatureCount, 1);
+	
+	printf("Temperatures: \n");
 	int i;
-	for (i = 0; i < 20; i++ ){
+	for (i = 0; i < temperatureCount; i++ ){
 		printf("%lf \n", temperatures[i]);
 	}
+	
+	double average;
+	average = calculateAverage(temperatures, temperatureCount);
 
+	printf("Average: %lf \n", average);
 
+	if(average < 40)
+		return 0;
+
+	char emailAddress[]  = "d@stuhrs.dk";
+	sendMail(emailAddress);
+
+	return 0;
 }
 
