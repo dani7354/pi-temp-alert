@@ -2,16 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-
-#define REQUIRED_ARG_COUNT 4
-#define TEMPERATURE_COUNT 100
-#define TEMPERATURE_FILE "./example_files/temp1"
-
-typedef struct Configurations {
-	char recipient[50];
-	int intervalInSeconds;	
-	double temperatureThreshold;
-} Configuration;
+#include "configuration.h"
 
 double readTemperature(char *filePath){
 	FILE *tempFile;
@@ -24,16 +15,20 @@ double readTemperature(char *filePath){
 	fclose(tempFile);
 	temperature /= 1000;
 
-	return temperature;	
+	return temperature;
 }
 
-double  *collectTemperatureValues(double tempArr[], int temperatureCount, int intervalInSeconds){
+double  *collectTemperatureValues(
+	double tempArr[],
+	int temperatureCount,
+	int intervalInSeconds)
+ {
 	int i;
 	for (i = 0; i < temperatureCount; i++){
 		sleep(intervalInSeconds); // Sleep before reading the next value
 		tempArr[i] = readTemperature(TEMPERATURE_FILE);
 	}
-	
+
 	return tempArr;
 }
 
@@ -52,37 +47,24 @@ void sendMail(char *recipient){
 	printf("Sending email to %s", recipient);
 }
 
-Configuration  parseArguments(int count, char *arguments[]) { 
 
-	if(count < REQUIRED_ARG_COUNT){
-		fprintf(stderr, "Missing arguments.. Program will terminate!\n");
-		exit(EXIT_FAILURE);
-	}
-	
-	Configuration config;
-	config.temperatureThreshold = atof(arguments[1]);	
-	config.intervalInSeconds = atoi(arguments[2]);
-	strncpy(config.recipient, arguments[3], sizeof(config.recipient));
-
-	return config;
-}
 
 int main( int argc, char *argv[] ) {
 
 	Configuration config;
-	
+
 	config = parseArguments(argc, argv);
 
 	double temperatures[TEMPERATURE_COUNT];
 
 	collectTemperatureValues(temperatures, TEMPERATURE_COUNT, config.intervalInSeconds);
-	
+
 	printf("Temperatures: \n");
 	int i;
 	for (i = 0; i < TEMPERATURE_COUNT; i++ ){
 		printf("%lf \n", temperatures[i]);
 	}
-	
+
 	double average;
 	average = calculateAverage(temperatures, TEMPERATURE_COUNT);
 
@@ -96,4 +78,3 @@ int main( int argc, char *argv[] ) {
 
 	return 0;
 }
-

@@ -8,6 +8,8 @@
 
 typedef struct Configurations {
 	char recipient[50];
+  char temperatureFile[50];
+  int temperatureCount;
 	int intervalInSeconds;
 	double temperatureThreshold;
 } Configuration;
@@ -20,9 +22,11 @@ Configuration  parseArguments(int count, char *arguments[]) {
 	}
 
 	Configuration config;
+  config.temperatureCount = REQUIRED_ARG_COUNT;
 	config.temperatureThreshold = atof(arguments[1]);
 	config.intervalInSeconds = atoi(arguments[2]);
 	strncpy(config.recipient, arguments[3], sizeof(config.recipient));
+  strncpy(config.temperatureFile, TEMPERATURE_FILE, sizeof(config.temperatureFile));
 
 	return config;
 }
