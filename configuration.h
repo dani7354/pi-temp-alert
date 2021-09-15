@@ -22,7 +22,7 @@ Configuration  parseArguments(int count, char *arguments[]) {
 	}
 
 	Configuration config;
-  config.temperatureCount = REQUIRED_ARG_COUNT;
+  config.temperatureCount = TEMPERATURE_COUNT;
 	config.temperatureThreshold = atof(arguments[1]);
 	config.intervalInSeconds = atoi(arguments[2]);
 	strncpy(config.recipient, arguments[3], sizeof(config.recipient));

@@ -3,34 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include "configuration.h"
-
-double readTemperature(char *filePath){
-	FILE *tempFile;
-	tempFile = fopen(filePath, "r");
-	if(tempFile == NULL)
-		return 1;
-
-	double temperature;
-	fscanf(tempFile, "%lf", &temperature);
-	fclose(tempFile);
-	temperature /= 1000;
-
-	return temperature;
-}
-
-double  *collectTemperatureValues(
-	double tempArr[],
-	int temperatureCount,
-	int intervalInSeconds)
- {
-	int i;
-	for (i = 0; i < temperatureCount; i++){
-		sleep(intervalInSeconds); // Sleep before reading the next value
-		tempArr[i] = readTemperature(TEMPERATURE_FILE);
-	}
-
-	return tempArr;
-}
+#include "temperature.h"
 
 double calculateAverage(double values[], int size){
 	double sum, average;
@@ -47,26 +20,28 @@ void sendMail(char *recipient){
 	printf("Sending email to %s", recipient);
 }
 
-
-
 int main( int argc, char *argv[] ) {
 
 	Configuration config;
 
 	config = parseArguments(argc, argv);
 
-	double temperatures[TEMPERATURE_COUNT];
+	double temperatures[config.temperatureCount];
 
-	collectTemperatureValues(temperatures, TEMPERATURE_COUNT, config.intervalInSeconds);
+	collectTemperatureValues(
+		config.temperatureFile,
+		 temperatures,
+		 config.temperatureCount,
+		 config.intervalInSeconds);
 
 	printf("Temperatures: \n");
 	int i;
-	for (i = 0; i < TEMPERATURE_COUNT; i++ ){
+	for (i = 0; i < config.temperatureCount; i++ ){
 		printf("%lf \n", temperatures[i]);
 	}
 
 	double average;
-	average = calculateAverage(temperatures, TEMPERATURE_COUNT);
+	average = calculateAverage(temperatures, config.temperatureCount);
 
 	printf("Average: %lf \n", average);
 
