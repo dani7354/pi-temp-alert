@@ -5,6 +5,9 @@
 #include "configuration.h"
 #include "temperature.h"
 
+#define MAIL_COMMAND " | mail -s \"Temperature alert\" "
+#define ECHO_COMMAND "echo Average temperature was " 
+
 double calculate_average(double values[], int size){
 	double sum, average;
 	int i;
@@ -16,11 +19,28 @@ double calculate_average(double values[], int size){
 	return average;
 }
 
-void send_mail(char *recipient){
-	printf("Sending email to %s", recipient);
+void send_mail(char *recipient, double temperature){
+	printf("Sending email to %s\n", recipient);
+
+	char temp_str[10];
+	snprintf(temp_str, sizeof(temp_str), "%f", temperature);
+
+	int size = strlen(ECHO_COMMAND) + strlen(temp_str) + strlen(recipient) + strlen(MAIL_COMMAND) + 1;
+	char *command = malloc(size);
+	if(command == NULL){
+		fprintf(stderr, "Failed to allocate memory.. Program will terminate!\n");
+		exit(EXIT_FAILURE);
+	}
+
+	strcpy(command, ECHO_COMMAND);
+	strcat(command, temp_str);
+	strcat(command, MAIL_COMMAND);
+	strcat(command, recipient);
+	system(command);
+	printf("%s", command);
 }
 
-int main( int argc, char *argv[] ) {
+int main(int argc, char *argv[] ) {
 
 	struct config config;
 	config = parse_args(argc, argv);
@@ -44,11 +64,12 @@ int main( int argc, char *argv[] ) {
 
 	printf("Average: %lf \n", average);
 
-	if(average < config.temperature_threshold)
-		return 0;
+	if(average < config.temperature_threshold){
+		send_mail(config.mail_recipient, average);
+	}
 
 	char emailAddress[]  = "d@stuhrs.dk";
-	send_mail(emailAddress);
+	send_mail(emailAddress, average);
 
 	return 0;
 }

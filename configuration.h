@@ -1,4 +1,4 @@
-#define TEMPERATURE_COUNT 100
+#define TEMPERATURE_COUNT 10
 #define REQUIRED_ARG_COUNT 4
 #define TEMPERATURE_FILE "./example_files/temp1"
 
@@ -10,6 +10,8 @@ struct config {
 	double temperature_threshold;
 };
 
+struct config config;
+
 struct config parse_args(int count, char *arguments[]) {
 
 	if(count < REQUIRED_ARG_COUNT){
@@ -17,7 +19,6 @@ struct config parse_args(int count, char *arguments[]) {
 		exit(EXIT_FAILURE);
 	}
 
-	struct config config;
   config.temperature_read_count = TEMPERATURE_COUNT;
 	config.temperature_threshold = atof(arguments[1]);
 	config.interval_seconds = atoi(arguments[2]);

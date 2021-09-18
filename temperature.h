@@ -1,29 +1,29 @@
 
-double read_temp(char *filePath){
-	FILE *tempFile;
-	tempFile = fopen(filePath, "r");
-	if(tempFile == NULL)
+double read_temp(char *file_path){
+	FILE *temp_source;
+	temp_source = fopen(file_path, "r");
+	if(temp_source == NULL)
 		return 1;
 
 	double temperature;
-	fscanf(tempFile, "%lf", &temperature);
-	fclose(tempFile);
+	fscanf(temp_source, "%lf", &temperature);
+	fclose(temp_source);
 	temperature /= 1000;
 
 	return temperature;
 }
 
 double *collect_temp_values(
-  char *filePath,
-	double tempArr[],
-	int temperatureCount,
-	int intervalInSeconds)
+  char *file_path,
+	double temperatures[],
+	int temperature_read_count,
+	int interval_seconds)
  {
 	int i;
-	for (i = 0; i < temperatureCount; i++){
-		sleep(intervalInSeconds); // Sleep before reading the next value
-		tempArr[i] = read_temp(filePath);
+	for (i = 0; i < temperature_read_count; i++){
+		sleep(interval_seconds); // Sleep before reading the next value
+		temperatures[i] = read_temp(file_path);
 	}
 
-	return tempArr;
+	return temperatures;
 }
