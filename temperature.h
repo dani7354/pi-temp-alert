@@ -1,5 +1,5 @@
 
-double readTemperature(char *filePath){
+double read_temp(char *filePath){
 	FILE *tempFile;
 	tempFile = fopen(filePath, "r");
 	if(tempFile == NULL)
@@ -13,7 +13,7 @@ double readTemperature(char *filePath){
 	return temperature;
 }
 
-double *collectTemperatureValues(
+double *collect_temp_values(
   char *filePath,
 	double tempArr[],
 	int temperatureCount,
@@ -22,7 +22,7 @@ double *collectTemperatureValues(
 	int i;
 	for (i = 0; i < temperatureCount; i++){
 		sleep(intervalInSeconds); // Sleep before reading the next value
-		tempArr[i] = readTemperature(filePath);
+		tempArr[i] = read_temp(filePath);
 	}
 
 	return tempArr;
