@@ -3,7 +3,7 @@ double read_temp(char *file_path){
 	FILE *temp_source;
 	temp_source = fopen(file_path, "r");
 	if(temp_source == NULL)
-		return 1;
+		return -1;
 
 	double temperature;
 	fscanf(temp_source, "%lf", &temperature);

@@ -6,9 +6,6 @@
 #include "configuration.h"
 #include "temperature.h"
 
-#define MAIL_COMMAND " | mail -s \"Temperature alert\" "
-#define ECHO_COMMAND "echo Average temperature was "
-
 double calculate_average(double values[], int size){
 	double sum, average;
 	int i;
@@ -20,6 +17,18 @@ double calculate_average(double values[], int size){
 	return average;
 }
 
+void *ec_malloc(int size){
+	void *pointer;
+	pointer = malloc(size);
+
+	if(pointer == NULL){
+		fprintf(stderr, "Failed to allocate memory.. Program will terminate!\n");
+		exit(EXIT_FAILURE);
+	}
+
+	return pointer;
+}
+
 char *get_mail_command(char *recipient, double temperature){
 	char mail_cmd[] =  " | mail -s \"Temperature alert\" ";
 	char echo_cmd[] = "echo Average temperature was ";
@@ -28,12 +37,7 @@ char *get_mail_command(char *recipient, double temperature){
 	snprintf(temp_str, sizeof(temp_str), "%f", temperature);
 	int size = strlen(echo_cmd) + strlen(temp_str) + strlen(recipient) + strlen(mail_cmd) + 1;
 
-	char *command = (char *) malloc(size);
-
-	if(command == NULL){
-		fprintf(stderr, "Failed to allocate memory.. Program will terminate!\n");
-		exit(EXIT_FAILURE);
-	}
+	char *command = (char *) ec_malloc(size);
 
 	strcpy(command, echo_cmd);
 	strcat(command, temp_str);
@@ -68,9 +72,6 @@ int main(int argc, char *argv[] ) {
 			 temperatures,
 			 config.temperature_read_count,
 			 config.interval_seconds);
-
-		printf("Temperatures: \n");
-		int i;
 
 		double average;
 		average = calculate_average(temperatures, config.temperature_read_count);

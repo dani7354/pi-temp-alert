@@ -10,7 +10,7 @@ struct config {
 	double temperature_threshold;
 };
 
-struct config config;
+
 
 struct config parse_args(int count, char *arguments[]) {
 
@@ -18,6 +18,7 @@ struct config parse_args(int count, char *arguments[]) {
 		fprintf(stderr, "Missing arguments.. Program will terminate!\n");
 		exit(EXIT_FAILURE);
 	}
+	struct config config;
 
   config.temperature_read_count = TEMPERATURE_COUNT;
 	config.temperature_threshold = atof(arguments[1]);
