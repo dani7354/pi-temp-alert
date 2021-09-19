@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdbool.h>
 #include "configuration.h"
 #include "temperature.h"
 
 #define MAIL_COMMAND " | mail -s \"Temperature alert\" "
-#define ECHO_COMMAND "echo Average temperature was " 
+#define ECHO_COMMAND "echo Average temperature was "
 
 double calculate_average(double values[], int size){
 	double sum, average;
@@ -19,25 +20,37 @@ double calculate_average(double values[], int size){
 	return average;
 }
 
-void send_mail(char *recipient, double temperature){
-	printf("Sending email to %s\n", recipient);
-
+char *get_mail_command(char *recipient, double temperature){
+	char mail_cmd[] =  " | mail -s \"Temperature alert\" ";
+	char echo_cmd[] = "echo Average temperature was ";
 	char temp_str[10];
-	snprintf(temp_str, sizeof(temp_str), "%f", temperature);
 
-	int size = strlen(ECHO_COMMAND) + strlen(temp_str) + strlen(recipient) + strlen(MAIL_COMMAND) + 1;
-	char *command = malloc(size);
+	snprintf(temp_str, sizeof(temp_str), "%f", temperature);
+	int size = strlen(echo_cmd) + strlen(temp_str) + strlen(recipient) + strlen(mail_cmd) + 1;
+
+	char *command = (char *) malloc(size);
+
 	if(command == NULL){
 		fprintf(stderr, "Failed to allocate memory.. Program will terminate!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	strcpy(command, ECHO_COMMAND);
+	strcpy(command, echo_cmd);
 	strcat(command, temp_str);
-	strcat(command, MAIL_COMMAND);
+	strcat(command, mail_cmd);
 	strcat(command, recipient);
-	system(command);
-	printf("%s", command);
+
+	return command;
+}
+
+int send_mail(char *recipient, double temperature){
+	printf("Sending email to %s\n", recipient);
+	char *command = get_mail_command(recipient, temperature);
+
+	int exitcode = system(command);
+	free(command);
+
+	return exitcode;
 }
 
 int main(int argc, char *argv[] ) {
@@ -45,31 +58,36 @@ int main(int argc, char *argv[] ) {
 	struct config config;
 	config = parse_args(argc, argv);
 
+	bool running = true;
 	double temperatures[config.temperature_read_count];
 
-	collect_temp_values(
-		config.temperature_source_file,
-		 temperatures,
-		 config.temperature_read_count,
-		 config.interval_seconds);
+	while (running) {
+		printf("Reading %d temperature values from %s with interval %d \n", config.temperature_read_count, config.temperature_source_file, config.interval_seconds);
+		collect_temp_values(
+			config.temperature_source_file,
+			 temperatures,
+			 config.temperature_read_count,
+			 config.interval_seconds);
 
-	printf("Temperatures: \n");
-	int i;
-	for (i = 0; i < config.temperature_read_count; i++ ){
-		printf("%lf \n", temperatures[i]);
+		printf("Temperatures: \n");
+		int i;
+
+		double average;
+		average = calculate_average(temperatures, config.temperature_read_count);
+
+		printf("Temperature average: %lf \n", average);
+
+		int exitcode;
+
+		if(average > config.temperature_threshold){
+			exitcode = send_mail(config.mail_recipient, average);
+
+			if(exitcode != 0){
+				printf("Failed to send mail! Command exited with code: %d\n", exitcode);
+				running = false;
+			}
+		}
 	}
-
-	double average;
-	average = calculate_average(temperatures, config.temperature_read_count);
-
-	printf("Average: %lf \n", average);
-
-	if(average < config.temperature_threshold){
-		send_mail(config.mail_recipient, average);
-	}
-
-	char emailAddress[]  = "d@stuhrs.dk";
-	send_mail(emailAddress, average);
 
 	return 0;
 }
