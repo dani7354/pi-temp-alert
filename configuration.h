@@ -1,6 +1,6 @@
 #define TEMPERATURE_COUNT 10
 #define REQUIRED_ARG_COUNT 4
-#define TEMPERATURE_FILE "./example_files/temp1"
+#define TEMPERATURE_FILE "/sys/class/thermal/thermal_zone0/temp"
 
 struct config {
 	char mail_recipient[50];
@@ -9,8 +9,6 @@ struct config {
 	int interval_seconds;
 	double temperature_threshold;
 };
-
-
 
 struct config parse_args(int count, char *arguments[]) {
 
