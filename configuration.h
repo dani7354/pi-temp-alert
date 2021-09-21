@@ -11,7 +11,6 @@ struct config {
 };
 
 struct config parse_args(int count, char *arguments[]) {
-
 	if(count < REQUIRED_ARG_COUNT){
 		fprintf(stderr, "Missing arguments.. Program will terminate!\n");
 		exit(EXIT_FAILURE);
