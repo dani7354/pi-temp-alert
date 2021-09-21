@@ -6,7 +6,7 @@
 #include "configuration.h"
 #include "temperature.h"
 
-double calculate_average(double values[], int size){
+double calculate_average(double values[], int size) {
 	double sum, average;
 	int i;
 
@@ -17,11 +17,11 @@ double calculate_average(double values[], int size){
 	return average;
 }
 
-void *ec_malloc(int size){
+void *ec_malloc(int size) {
 	void *pointer;
 	pointer = malloc(size);
 
-	if(pointer == NULL){
+	if(pointer == NULL) {
 		fprintf(stderr, "Failed to allocate memory.. Program will terminate!\n");
 		exit(EXIT_FAILURE);
 	}
@@ -29,7 +29,7 @@ void *ec_malloc(int size){
 	return pointer;
 }
 
-char *get_mail_command(char *recipient, double temperature){
+char *get_mail_command(char *recipient, double temperature) {
 	char mail_cmd[] =  " | mail -s \"Temperature alert\" ";
 	char echo_cmd[] = "echo Average temperature was ";
 	char temp_str[10];
@@ -47,7 +47,7 @@ char *get_mail_command(char *recipient, double temperature){
 	return command;
 }
 
-int send_mail(char *recipient, double temperature){
+int send_mail(char *recipient, double temperature) {
 	printf("Sending email to %s\n", recipient);
 	char *command = get_mail_command(recipient, temperature);
 
@@ -58,7 +58,6 @@ int send_mail(char *recipient, double temperature){
 }
 
 int main(int argc, char *argv[] ) {
-
 	struct config config;
 	config = parse_args(argc, argv);
 
@@ -79,11 +78,10 @@ int main(int argc, char *argv[] ) {
 		printf("Temperature average: %lf \n", average);
 
 		int exitcode;
-
-		if(average > config.temperature_threshold){
+		if(average > config.temperature_threshold) {
 			exitcode = send_mail(config.mail_recipient, average);
 
-			if(exitcode != 0){
+			if(exitcode != 0) {
 				printf("Failed to send mail! Command exited with code: %d\n", exitcode);
 				running = false;
 			}
