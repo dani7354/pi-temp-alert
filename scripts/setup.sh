@@ -20,7 +20,7 @@ sudo adduser tempalert --no-create-home --disabled-login --shell /usr/sbin/nolog
 
 if [[ ! -x /usr/lib/lsb/install_initd ]] ; then
     echo "Installing Linux Standard Base core support..."
-    sudo apt install lsb_core -y
+    sudo apt install lsb-core -y
 fi
 
 sudo cp "${SCRIPT_DIR}/tempalert.sh" /etc/init.d/tempalert
