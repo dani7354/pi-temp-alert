@@ -12,29 +12,28 @@ Tested on Ubuntu 20.04 for Raspberry Pi 4
    ```
 
 2. (Optional) Change values in the init script
-```
-$ vim pi-temp-alert/scripts/tempalert.sh
-```
-Change the values of the following three variables.
-```
-recipient="root"
-interval=1
-temperature_threshold=60
-```
+   ```
+   $ vim pi-temp-alert/scripts/tempalert.sh
+   ```
+   Change the values of the following three variables.
+   ```
+   recipient="root"
+   interval=1
+   temperature_threshold=60
+   ```
 
 3. Run the setup.sh script to compile the program and setup the init script
-```
-$ ./pi-temp-alert/scripts/setup.sh 
-```
+   ```
+   $ ./pi-temp-alert/scripts/setup.sh 
+   ```
 
-4. Try to stop and start the daemon. You can also check the status to see
-if it is running.
-```
-$ sudo service tempalert stop
-```
-```
-$ sudo service tempalert start
-```
-```
-$ sudo service tempalert status
-```
+4. Try to stop and start the daemon. You can also check the status to see if it is running.
+   ```
+   $ sudo service tempalert stop
+   ```
+   ```
+   $ sudo service tempalert start
+   ```
+   ```
+   $ sudo service tempalert status
+   ```
