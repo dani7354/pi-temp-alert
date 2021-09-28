@@ -7,9 +7,9 @@ address, if the average is above the defined temperature threshold.
 Tested on Ubuntu 20.04 for Raspberry Pi 4
 
 1. Clone the repository:
-```
-$ git clone --single-branch https://github.com/dani7354/pi-temp-alert.git
-```
+⋅⋅⋅```
+⋅⋅⋅$ git clone --single-branch https://github.com/dani7354/pi-temp-alert.git
+⋅⋅⋅```
 
 2. (Optional) Change values in the init script
 ```
